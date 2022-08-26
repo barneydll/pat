@@ -16,6 +16,7 @@ PropKill script for training prop accuracy.
 |`pat_skybox 0/1`|Make skybox gray.|
 |`pat_spheresize 1-100`|Target size.|
 |`pat_spherespeed 0-inf`|Target speed.|
+|`pat_sphereresolution 1-inf`|Sphere resolution.|
 |`pat_wallcompensation 0-inf`|Maximum distance to a wall to reverse direction.|
 
 # ConCommands
