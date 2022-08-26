@@ -249,9 +249,9 @@ hook.Add("PreDrawEffects","PAT_SphereVisualizer",function()
 		render.DepthRange(0,0)
 
 		render.SetColorMaterial()
-		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat()-1,4,4,Color(0,0,0))
+		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat()-1,pat_sphereresolution:GetInt(),pat_sphereresolution:GetInt(),Color(0,0,0))
 		render.SetMaterial(Material("!PAT_SphereWireframe"))
-		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat(),4,4,Color(255,255,255))
+		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat(),pat_sphereresolution:GetInt(),pat_sphereresolution:GetInt(),Color(255,255,255))
 
 		render.DepthRange(0,1)
 	end
