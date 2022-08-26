@@ -5,6 +5,7 @@ local pat_spherespeed = CreateClientConVar("pat_spherespeed",4,true,false,"Targe
 local pat_maxheadingdiff = CreateClientConVar("pat_maxheadingdiff",10,true,false,"Max angle change per frame",0,360)
 local pat_skybox = CreateClientConVar("pat_skybox",1,true,false,"Make skybox gray",0,1)
 local pat_showscore = CreateClientConVar("pat_showscore",1,true,false,"Show score on the right side of the screen",0,1)
+local pat_iterations = CreateClientConVar("pat_iterations",6,true,false,"Amount of iterations when generating points. Very laggy at high numbers!",2)
 
 surface.CreateFont("PAT_HUDFont", {
 	font = "Arial",
@@ -105,7 +106,7 @@ concommand.Add("pat_createpoints",function()
 
 	origSize = #pointfield
 
-	for i=1,6 do
+	for i=1,pat_iterations:GetInt()-2 do
 		Iterator()
 	end
 
