@@ -9,6 +9,7 @@ PropKill script for training prop accuracy.
 # CVars
 | Name and Values | Description |
 | --- | --- |
+|`pat_iterations 2-inf`|Amount of iterations when generating points. Very laggy at high numbers!|
 |`pat_maxheadingdiff 0-360`|Max angle change per frame.|
 |`pat_respawntim  e 0-inf`|Time before the target automatically respawns.|
 |`pat_showscore 0/1`|Show score on the right side of the screen.|
