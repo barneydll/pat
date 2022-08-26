@@ -6,6 +6,9 @@ local pat_maxheadingdiff = CreateClientConVar("pat_maxheadingdiff",10,true,false
 local pat_skybox = CreateClientConVar("pat_skybox",1,true,false,"Make skybox gray",0,1)
 local pat_showscore = CreateClientConVar("pat_showscore",1,true,false,"Show score on the right side of the screen",0,1)
 local pat_iterations = CreateClientConVar("pat_iterations",6,true,false,"Amount of iterations when generating points. Very laggy at high numbers!",2)
+local pat_sphereresolution = CreateClientConVar("pat_sphereresolution",4,true,false,"Sphere resolution",1)
+
+CreateMaterial("PAT_SphereWireframe","wireframe")
 
 surface.CreateFont("PAT_HUDFont", {
 	font = "Arial",
@@ -243,9 +246,14 @@ end)
 
 hook.Add("PreDrawEffects","PAT_SphereVisualizer",function()
 	if SphereCoordinate then
-		render.SetColorMaterialIgnoreZ()
-		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat()-1,10,10,Color(0,0,0))
-		render.DrawWireframeSphere(SphereCoordinate,pat_spheresize:GetFloat(),10,10,Color(255,255,255))
+		render.DepthRange(0,0)
+
+		render.SetColorMaterial()
+		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat()-1,4,4,Color(0,0,0))
+		render.SetMaterial(Material("!PAT_SphereWireframe"))
+		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat(),4,4,Color(255,255,255))
+
+		render.DepthRange(0,1)
 	end
 end)
 
