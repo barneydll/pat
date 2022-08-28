@@ -128,8 +128,12 @@ concommand.Add("pat_resetdpborder",function()
 		end
 
 		for _,f in pairs(DPBHooks) do
-			f()
+			pcall(function()
+				f(ply, physgun, enabled, target, physBone, hitPos)
+			end)
 		end
+
+		return false
 	end)
 end)
 
