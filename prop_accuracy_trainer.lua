@@ -7,8 +7,14 @@ local pat_skybox = CreateClientConVar("pat_skybox",1,true,false,"Make skybox gra
 local pat_showscore = CreateClientConVar("pat_showscore",1,true,false,"Show score on the right side of the screen",0,1)
 local pat_iterations = CreateClientConVar("pat_iterations",6,true,false,"Amount of iterations when generating points. Very laggy at high numbers!",2)
 local pat_sphereresolution = CreateClientConVar("pat_sphereresolution",4,true,false,"Sphere resolution",1)
+local pat_dodge = CreateClientConVar("pat_dodge",1,true,false,"Make the target fly away from props",0,1)
+local pat_dodgereactiontime = CreateClientConVar("pat_dodgereactiontime",0,true,false,"How long before the target starts dodging (in milliseconds)",0,1000)
+local pat_pitchloss = CreateClientConVar("pat_pitchloss",0.999,true,false,"Percentage of pitch kept per frame",0,1)
+local pat_cheatcompatibility = CreateClientConVar("pat_cheatcompatibility",0,true,false,"Disables target rendering if your cheat supports PAT",0,1)
 
 CreateMaterial("PAT_SphereWireframe","wireframe")
+
+util.PrecacheModel("models/hunter/misc/sphere1x1.mdl")
 
 surface.CreateFont("PAT_HUDFont", {
 	font = "Arial",
@@ -178,6 +184,7 @@ concommand.Add("pat_seedesp",function()
 	seedESPEnabled = not seedESPEnabled
 end)
 
+local FakeProp = nil
 local CanMiss = true
 local HitSphere = false
 local SphereCoordinate = nil
@@ -196,6 +203,7 @@ end
 timer.Create("PAT_SphereSpawner",1,0,function()
 	if #validpoints > 0 then
 		SphereCoordinate = validpoints[math.random(1,#validpoints)]
+
 		if HitSphere then
 			hits = hits + 1
 			sound.Play("physics/glass/glass_bottle_break2.wav",SphereCoordinate,100,100,1)
@@ -205,15 +213,43 @@ timer.Create("PAT_SphereSpawner",1,0,function()
 		end
 		timer.Adjust("PAT_SphereSpawner",pat_respawntime:GetFloat())
 
+		if FakeProp then
+			FakeProp:Remove()
+		end
+
+		if pat_cheatcompatibility:GetInt() == 1 then
+			FakeProp = ents.CreateClientProp("models/hunter/misc/sphere1x1.mdl")
+			FakeProp:SetModelScale(pat_spheresize:GetFloat()/23.975)
+			FakeProp:SetPos(SphereCoordinate)
+			FakeProp:Spawn()
+			_G.PAT_FakeProp = FakeProp
+		end
+
 		HitSphere = false
 	else
 		SphereCoordinate = nil
 	end
 end)
 
+local function GetAngleDifference(a,b)
+	return math.AngleDifference(a.p,b.p), math.AngleDifference(a.y,b.y)
+end
+
 hook.Add("Think","PAT_SphereLogic",function()
 	if SphereCoordinate then
+		local TargetInDanger = false
 		for _,prop in pairs(ents.FindByClass("prop_physics")) do
+			if pat_dodge:GetInt() == 1 then
+				local p,y = GetAngleDifference(prop:WorldToLocal(SphereCoordinate):Angle(),prop:GetVelocity():Angle())
+				if p < 20 and y < 20 then
+					local newang = (SphereCoordinate-prop:GetPos()):Angle()
+					newang.y = newang.y + math.Rand(-pat_maxheadingdiff:GetFloat(),pat_maxheadingdiff:GetFloat())
+					timer.Simple(pat_dodgereactiontime:GetFloat()/1000,function()
+						SphereHeading = newang
+					end)
+				end
+			end
+
 			local Trace = util.QuickTrace(SphereCoordinate,(prop:LocalToWorld(prop:OBBCenter()))-SphereCoordinate,function(p)
 				if p:GetClass() == "prop_physics" then return true end
 			end)
@@ -238,22 +274,29 @@ hook.Add("Think","PAT_SphereLogic",function()
 		end
 
 		SphereHeading = SphereHeading + Offset
+		SphereHeading.p = SphereHeading.p * pat_pitchloss:GetFloat()
 		SphereCoordinate = SphereCoordinate + (SphereHeading:Forward()*pat_spherespeed:GetFloat())
+
+		if FakeProp then
+			FakeProp:SetPos(SphereCoordinate)
+		end
 
 		LocalProp = nil
 	end
 end)
 
 hook.Add("PreDrawEffects","PAT_SphereVisualizer",function()
-	if SphereCoordinate then
-		render.DepthRange(0,0)
+	if pat_cheatcompatibility:GetInt() == 0 then
+		if SphereCoordinate then
+			render.DepthRange(0,0)
 
-		render.SetColorMaterial()
-		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat()-1,pat_sphereresolution:GetInt(),pat_sphereresolution:GetInt(),Color(0,0,0))
-		render.SetMaterial(Material("!PAT_SphereWireframe"))
-		render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat(),pat_sphereresolution:GetInt(),pat_sphereresolution:GetInt(),Color(255,255,255))
+			render.SetColorMaterial()
+			render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat()-1,pat_sphereresolution:GetInt(),pat_sphereresolution:GetInt(),Color(0,0,0))
+			render.SetMaterial(Material("!PAT_SphereWireframe"))
+			render.DrawSphere(SphereCoordinate,pat_spheresize:GetFloat(),pat_sphereresolution:GetInt(),pat_sphereresolution:GetInt(),Color(255,255,255))
 
-		render.DepthRange(0,1)
+			render.DepthRange(0,1)
+		end
 	end
 end)
 
