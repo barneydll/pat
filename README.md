@@ -2,7 +2,7 @@
 PropKill script for training prop accuracy.
 
 # How to use
-1. Use the command `pat_createseed` to place "seeds". Seeds are the starting point for generating possible spawn positions of the target.<br />
+1. Use the command `pat_createseed` to place "seeds". Seeds are the starting point for generating possible spawn positions of the target.
 2. Use the command `pat_createpoints` to scan the map for spawn positions, this will cause your game to freeze for a moment. The target will spawn automatically after generating the points.
 3. **Practice!**
 
@@ -32,3 +32,8 @@ PropKill script for training prop accuracy.
 |`pat_pointesp`|Toggles ESP for points. Red = Scanned Positions, Blue = Spawn Positions.|
 |`pat_resetscore`|Resets your score.|
 |`pat_seedesp`|Toggles ESP for seeds.|
+
+# Adding Cheat Compatibility
+**This will require you to edit the script's code! If it's not yours, make sure it's not obfuscated.**
+You can use `_G.PAT_FakeProp` to get the target's entity.
+Beware! `_G.PAT_FakeProp` is not always an entity, or valid. Make sure to use something like `if _G.PAT_FakeProp and _G.PAT_FakeProp:IsValid() then [code] end` to prevent errors.
