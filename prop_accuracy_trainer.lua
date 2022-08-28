@@ -34,6 +34,20 @@ surface.CreateFont("PAT_HUDFont", {
 	outline = false,
 })
 
+local DPBHooks = {}
+
+local function FixHooks()
+	local htable = hook.GetTable()
+	if htable.DrawPhysgunBeam then
+		for k,v in pairs(htable.DrawPhysgunBeam) do
+			if k ~= "PAT_PropLogger" then
+				DPBHooks[k] = v
+				hook.Remove("DrawPhysgunBeam",k)
+			end
+		end
+	end
+end
+
 hook.Remove("HUDPaint","PAT_PointVisualizer")
 hook.Remove("PreDrawEffects","PAT_SeedVisualizer")
 
@@ -103,6 +117,21 @@ hook.Add("DrawPhysgunBeam","PAT_PropLogger",function(ply, physgun, enabled, targ
 	end
 end)
 
+concommand.Add("pat_resetdpborder",function()
+	FixHooks()
+
+	hook.Remove("DrawPhysgunBeam","PAT_PropLogger")
+
+	hook.Add("DrawPhysgunBeam","PAT_PropLogger",function(ply, physgun, enabled, target, physBone, hitPos)
+		if ply == LocalPlayer() then
+			LocalProp = target
+		end
+
+		for _,f in pairs(DPBHooks) do
+			f()
+		end
+	end)
+end)
 
 concommand.Add("pat_createseed",function()
 	seeds[#seeds+1] = LocalPlayer():EyePos()
@@ -255,7 +284,7 @@ hook.Add("Think","PAT_SphereLogic",function()
 			end)
 
 			if Trace.HitNonWorld and SphereCoordinate:Distance(Trace.HitPos) <= pat_spheresize:GetFloat() then
-				if not LocalProp:IsValid() then
+				if not LocalProp or not LocalProp:IsValid() then
 					timer.Adjust("PAT_SphereSpawner",0)
 					timer.Start("PAT_SphereSpawner")
 					HitSphere = true

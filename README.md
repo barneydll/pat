@@ -9,7 +9,7 @@ PropKill script for training prop accuracy.
 # CVars
 | Name and Values | Description |
 | --- | --- |
-|`pat_cheatcompatibility`|Disables target rendering if your cheat supports PAT.|
+|`pat_cheatcompatibility 0/1`|Disables target rendering if your cheat supports PAT.|
 |`pat_dodge 0/1`|Make the target fly away from props.|
 |`pat_dodgereactiontime`|How long before the target starts dodging (in milliseconds).|
 |`pat_iterations 2-inf`|Amount of iterations when generating points. Very laggy at high numbers!|
@@ -30,6 +30,7 @@ PropKill script for training prop accuracy.
 |`pat_createpoints`|Generates the spawn positions.|
 |`pat_createseed`|Creates a seed at your head's position.|
 |`pat_pointesp`|Toggles ESP for points. Red = Scanned Positions, Blue = Spawn Positions.|
+|`pat_resetdbporder`|Resets the order of the DrawPhysgunBeam hooks, ensuring PAT's hook runs first.|
 |`pat_resetscore`|Resets your score.|
 |`pat_seedesp`|Toggles ESP for seeds.|
 
