@@ -97,7 +97,7 @@ end
 
 local LocalProp = nil
 
-hook.Add("DrawPhysgunBeam","PhysgunOverwrite",function(ply, physgun, enabled, target, physBone, hitPos)
+hook.Add("DrawPhysgunBeam","PAT_PropLogger",function(ply, physgun, enabled, target, physBone, hitPos)
 	if ply == LocalPlayer() then
 		LocalProp = target
 	end
