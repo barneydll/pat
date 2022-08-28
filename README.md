@@ -11,10 +11,10 @@ PropKill script for training prop accuracy.
 | --- | --- |
 |`pat_cheatcompatibility 0/1`|Disables target rendering if your cheat supports PAT.|
 |`pat_dodge 0/1`|Make the target fly away from props.|
-|`pat_dodgereactiontime`|How long before the target starts dodging (in milliseconds).|
+|`pat_dodgereactiontime 0-1000`|How long before the target starts dodging (in milliseconds).|
 |`pat_iterations 2-inf`|Amount of iterations when generating points. Very laggy at high numbers!|
 |`pat_maxheadingdiff 0-360`|Max angle change per frame.|
-|`pat_pitchloss`|Percentage of pitch kept per frame.|
+|`pat_pitchloss 0-1`|Percentage of pitch kept per frame.|
 |`pat_respawntime 0-inf`|Time before the target automatically respawns.|
 |`pat_showscore 0/1`|Show score on the right side of the screen.|
 |`pat_skybox 0/1`|Make skybox gray.|
