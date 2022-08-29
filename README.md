@@ -10,6 +10,7 @@ PropKill script for training prop accuracy.
 | Name and Values | Description |
 | --- | --- |
 |`pat_cheatcompatibility 0/1`|Disables target rendering if your cheat supports PAT.|
+|`pat_faketargetangles 0/1`|Makes the fake target used for cheat compatibility have the heading angles.|
 |`pat_dodge 0/1`|Make the target fly away from props.|
 |`pat_dodgereactiontime 0-1000`|How long before the target starts dodging (in milliseconds).|
 |`pat_iterations 2-inf`|Amount of iterations when generating points. Very laggy at high numbers!|

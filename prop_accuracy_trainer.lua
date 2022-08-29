@@ -11,6 +11,7 @@ local pat_dodge = CreateClientConVar("pat_dodge",1,true,false,"Make the target f
 local pat_dodgereactiontime = CreateClientConVar("pat_dodgereactiontime",0,true,false,"How long before the target starts dodging (in milliseconds)",0,1000)
 local pat_pitchloss = CreateClientConVar("pat_pitchloss",0.999,true,false,"Percentage of pitch kept per frame",0,1)
 local pat_cheatcompatibility = CreateClientConVar("pat_cheatcompatibility",0,true,false,"Disables target rendering if your cheat supports PAT",0,1)
+local pat_faketargetangles = CreateClientConVar("pat_faketargetangles",0,true,false,"Makes the fake target used for cheat compatibility have the heading angles",0,1)
 
 CreateMaterial("PAT_SphereWireframe","wireframe")
 
@@ -310,8 +311,11 @@ hook.Add("Think","PAT_SphereLogic",function()
 		SphereHeading.p = SphereHeading.p * pat_pitchloss:GetFloat()
 		SphereCoordinate = SphereCoordinate + (SphereHeading:Forward()*pat_spherespeed:GetFloat())
 
-		if FakeProp then
+		if FakeProp and FakeProp:IsValid() then
 			FakeProp:SetPos(SphereCoordinate)
+			if pat_faketargetangles:GetInt() == 1 then
+				FakeProp:SetAngles(SphereHeading)
+			end
 		end
 
 		LocalProp = nil
@@ -358,6 +362,15 @@ hook.Add("HUDPaint","PAT_HudData",function()
 		draw.SimpleTextOutlined(tostring(nearmisses),"PAT_HUDFont",((ScrW()-10)-x1-5)-dx-5,ScrH()/2+10,Color(100,120,255,255),2,3,2,Color(0,0,0,255))
 		draw.SimpleTextOutlined("/","PAT_HUDFont",(((ScrW()-10)-x1-5)-dx-5)-x2-5,ScrH()/2+10,Color(255,255,255,255),2,3,2,Color(0,0,0,255))
 		draw.SimpleTextOutlined(tostring(hits),"PAT_HUDFont",((((ScrW()-10)-x1-5)-dx-5)-x2-5)-x3,ScrH()/2+10,Color(100,255,120,255),2,3,2,Color(0,0,0,255))
+
+		if pat_cheatcompatibility:GetInt() == 0 then
+			cam.Start3D()
+
+			local angs = pat_faketargetangles:GetInt() == 1 and SphereHeading or Angle()
+			render.DrawWireframeBox(SphereCoordinate,angs,Vector(-1,-1,-1)*pat_spheresize:GetFloat(),Vector(1,1,1)*pat_spheresize:GetFloat())
+
+			cam.End3D()
+		end
 
 		local ratio = hits/(hits+misses)
 		draw.SimpleTextOutlined(string.format("%.2f",tostring((ratio == ratio and ratio or 0))),"PAT_HUDFont",ScrW()-10,ScrH()/2-10,Color(255,255,255,255),2,3,2,Color(0,0,0,255))
