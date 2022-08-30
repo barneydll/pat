@@ -37,5 +37,5 @@ PropKill script for training prop accuracy.
 
 # Adding Cheat Compatibility
 **This will require you to edit the script's code! If it's not yours, make sure it's not obfuscated.**<br />
-You can use `_G.PAT_FakeProp` to get the target's entity.<br />
+You can use `_G.PAT_FakeProp` to get the target's entity (The class is `C_PhysPropClientside`).<br />
 Beware! `_G.PAT_FakeProp` is not always an entity, or valid. Make sure to use something like `if _G.PAT_FakeProp and _G.PAT_FakeProp:IsValid() then [code] end` to prevent errors.<br />
