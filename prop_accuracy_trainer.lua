@@ -363,7 +363,7 @@ hook.Add("HUDPaint","PAT_HudData",function()
 		draw.SimpleTextOutlined("/","PAT_HUDFont",(((ScrW()-10)-x1-5)-dx-5)-x2-5,ScrH()/2+10,Color(255,255,255,255),2,3,2,Color(0,0,0,255))
 		draw.SimpleTextOutlined(tostring(hits),"PAT_HUDFont",((((ScrW()-10)-x1-5)-dx-5)-x2-5)-x3,ScrH()/2+10,Color(100,255,120,255),2,3,2,Color(0,0,0,255))
 
-		if pat_cheatcompatibility:GetInt() == 0 then
+		if SphereCoordinate and pat_cheatcompatibility:GetInt() == 0 then
 			cam.Start3D()
 
 			local angs = pat_faketargetangles:GetInt() == 1 and SphereHeading or Angle()
